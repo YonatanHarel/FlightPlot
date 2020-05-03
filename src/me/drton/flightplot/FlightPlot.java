@@ -4,6 +4,7 @@ import me.drton.flightplot.export.GPXTrackExporter;
 import me.drton.flightplot.export.KMLTrackExporter;
 import me.drton.flightplot.export.TrackExportDialog;
 import me.drton.flightplot.export.TrackExporter;
+import me.drton.flightplot.export.CSVUtils;
 import me.drton.flightplot.processors.PlotProcessor;
 import me.drton.flightplot.processors.ProcessorsList;
 import me.drton.flightplot.processors.Simple;
@@ -758,6 +759,15 @@ public class FlightPlot {
         });
         fileMenu.add(exportParametersItem);
 
+        JMenuItem exportToCsvItem = new JMenuItem("Export to CSV...");
+        exportToCsvItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showExportToCsvDialog();
+            }
+        });
+        fileMenu.add(exportToCsvItem);
+
         if (!OSValidator.isMac()) {
             fileMenu.add(new JPopupMenu.Separator());
             JMenuItem exitItem = new JMenuItem("Exit");
@@ -1050,6 +1060,31 @@ public class FlightPlot {
             } catch (Exception e) {
                 setStatus("Error: " + e);
                 e.printStackTrace();
+            }
+        }
+    }
+
+    public void showExportToCsvDialog() {
+        if (logReader == null) {
+            JOptionPane.showMessageDialog(mainFrame, "Log file must be opened first.", "Error",
+                    JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        JFileChooser fc = new JFileChooser();
+        fc.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        fc.setDialogTitle("Export Data to CSV");
+        int returnVal = fc.showDialog(mainFrame, "Export");
+        if (returnVal == JFileChooser.APPROVE_OPTION) {
+            String dirName = fc.getSelectedFile().toString();
+            Map<String, List<Map<String, Object>>> data = logReader.getDataMapForExportToCsv();
+            if (null == data) {
+                JOptionPane.showMessageDialog(mainFrame, "This log type is not supported yet.", "Error",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            } else {
+                CSVUtils.exportToCsv(dirName + File.separator, data);
+                JOptionPane.showMessageDialog(mainFrame, "Done!.", "Export to CSV", JOptionPane.PLAIN_MESSAGE);
             }
         }
     }

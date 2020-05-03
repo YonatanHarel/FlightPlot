@@ -17,6 +17,10 @@
         <pathelement location="lib/asm4-all.jar"/>
         <pathelement location="lib/jdom.jar"/>
         <pathelement location="lib/vecmath.jar"/>
+        <pathelement location="lib/jackson-annotations-2.9.0.jar.jar"/>
+        <pathelement location="lib/jackson-core-2.9.0.jar.jar"/>
+        <pathelement location="lib/jackson-databind-2.9.0.jar.jar"/>
+        <pathelement location="lib/jackson-dataformat-csv-2.9.0.jar.jar"/>
     </path>
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.class.path"/>
 
