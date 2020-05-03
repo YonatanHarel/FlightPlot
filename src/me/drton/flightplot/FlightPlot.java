@@ -1083,8 +1083,14 @@ public class FlightPlot {
                         JOptionPane.ERROR_MESSAGE);
                 return;
             } else {
-                CSVUtils.exportToCsv(dirName + File.separator, data);
-                JOptionPane.showMessageDialog(mainFrame, "Done!.", "Export to CSV", JOptionPane.PLAIN_MESSAGE);
+                String retValue = CSVUtils.exportToCsv(dirName + File.separator, data);
+                if (null == retValue) {
+                    JOptionPane.showMessageDialog(mainFrame, "Done!.", "Export to CSV",
+                            JOptionPane.PLAIN_MESSAGE);
+                } else {
+                    JOptionPane.showMessageDialog(mainFrame, retValue, "Error",
+                            JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }

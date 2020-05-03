@@ -9,7 +9,7 @@ import java.util.*;
 public class CSVUtils {
     final static String CSV_EXT = ".csv";
 
-    public static void exportToCsv(String dirName, Map<String, List<Map<String, Object>>> ulogData) {
+    public static String exportToCsv(String dirName, Map<String, List<Map<String, Object>>> ulogData) {
         for (Map.Entry<String, List<Map<String, Object>>> entry : ulogData.entrySet()) {
             File file = new File(dirName + entry.getKey() + CSV_EXT);
             try {
@@ -18,10 +18,13 @@ public class CSVUtils {
                 Reader reader = new FileReader(file);
                 csvReader(reader);
             } catch (IOException e) {
-                System.out.println("failed to create file. \n cause:");
-                System.out.println((e.getCause().getMessage()));
+                StringBuilder sb = new StringBuilder();
+                sb.append("failed to create file. \n cause:");
+                sb.append(e.getCause().getMessage());
+                return sb.toString();
             }
         }
+        return null;
     }
 
     /**
