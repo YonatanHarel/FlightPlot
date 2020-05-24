@@ -60,6 +60,7 @@ public class LogInfo {
             Map<String, Object> ver = logReader.getVersion();
             infoTableModel.addRow(new Object[]{"Hardware Version", ver.get("HW")});
             infoTableModel.addRow(new Object[]{"Firmware Version", ver.get("FW")});
+            infoTableModel.addRow(new Object[]{"FC Custom Version", ver.get("FC_ver")});
             Map<String, Object> parameters = logReader.getParameters();
             List<String> keys = new ArrayList<String>(parameters.keySet());
             Collections.sort(keys);
