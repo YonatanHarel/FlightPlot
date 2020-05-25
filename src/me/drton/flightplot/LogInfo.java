@@ -60,7 +60,7 @@ public class LogInfo {
             Map<String, Object> ver = logReader.getVersion();
             infoTableModel.addRow(new Object[]{"Hardware Version", ver.get("HW")});
             infoTableModel.addRow(new Object[]{"Firmware Version", ver.get("FW")});
-            infoTableModel.addRow(new Object[]{"FC Custom Version", ver.get("FC_ver")});
+            infoTableModel.addRow(new Object[]{"FC Custom Version", longToByte((Long) ver.get("FC_ver"))});
             Map<String, Object> parameters = logReader.getParameters();
             List<String> keys = new ArrayList<String>(parameters.keySet());
             Collections.sort(keys);
@@ -91,5 +91,20 @@ public class LogInfo {
         parametersTableModel.addColumn("Parameter");
         parametersTableModel.addColumn("Value");
         parametersTable = new JTable(parametersTableModel);
+    }
+
+    public String longToByte(long value)
+    {
+        byte [] data = new byte[3];
+        data[2] = (byte) (value >>> 8*1);
+        data[1] = (byte) (value >>> 8*2);
+        data[0] = (byte) (value >>> 8*3);
+
+        StringBuffer sb = new StringBuffer();
+        sb.append("v").
+                append(String.valueOf(data[0])).append(".").
+                append(String.valueOf(data[1])).append(".").
+                append(String.valueOf(data[2]));
+        return sb.toString();
     }
 }
