@@ -3,10 +3,14 @@ package me.drton.flightplot;
 import me.drton.jmavlib.log.LogReader;
 
 import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * User: ton Date: 27.10.13 Time: 17:45
@@ -17,8 +21,11 @@ public class LogInfo {
     private JTable infoTable;
     private DefaultTableModel infoTableModel;
     private JTable parametersTable;
+    private JTextField textSearch;
     private DefaultTableModel parametersTableModel;
     private DateFormat dateFormat;
+    private TableRowSorter sorter;
+
 
     public LogInfo() {
         mainFrame = new JFrame("Log Info");
@@ -26,6 +33,18 @@ public class LogInfo {
         mainFrame.pack();
         dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
         dateFormat.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+        textSearch.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
+            }
+            public void removeUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
+            }
+            public void insertUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
+            }
+        });
     }
 
     public JFrame getFrame() {
@@ -60,7 +79,7 @@ public class LogInfo {
             Map<String, Object> ver = logReader.getVersion();
             infoTableModel.addRow(new Object[]{"Hardware Version", ver.get("HW")});
             infoTableModel.addRow(new Object[]{"Firmware Version", ver.get("FW")});
-            infoTableModel.addRow(new Object[]{"FC Custom Version", longToByte((Long) ver.get("FC_ver"))});
+            infoTableModel.addRow(new Object[]{"FC Custom Version", /*longToByte((Long) */ver.get("FC_ver")});
             Map<String, Object> parameters = logReader.getParameters();
             List<String> keys = new ArrayList<String>(parameters.keySet());
             Collections.sort(keys);
@@ -91,20 +110,28 @@ public class LogInfo {
         parametersTableModel.addColumn("Parameter");
         parametersTableModel.addColumn("Value");
         parametersTable = new JTable(parametersTableModel);
+        sorter = new TableRowSorter<DefaultTableModel>(parametersTableModel);
+        parametersTable.setRowSorter(sorter);
     }
 
     public String longToByte(long value)
     {
         byte [] data = new byte[3];
+        data[3] = (byte) (value >>> 8*0);
         data[2] = (byte) (value >>> 8*1);
         data[1] = (byte) (value >>> 8*2);
         data[0] = (byte) (value >>> 8*3);
 
         StringBuffer sb = new StringBuffer();
         sb.append("v").
-                append(String.valueOf(data[0])).append(".").
-                append(String.valueOf(data[1])).append(".").
-                append(String.valueOf(data[2]));
+                append(String.valueOf(data[0] | data[1])).append(".").
+                append(String.valueOf(data[2])).append(".").
+                append(String.valueOf(data[3]));
         return sb.toString();
+    }
+
+    private void filterFields(String str) {
+        RowFilter<DefaultTableModel, Object> rf = RowFilter.regexFilter("(?i)"  + Pattern.quote(str), 0);
+        sorter.setRowFilter(rf);
     }
 }
