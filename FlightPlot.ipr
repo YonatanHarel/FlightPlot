@@ -158,7 +158,7 @@
       <module fileurl="file://$PROJECT_DIR$/FlightPlot.iml" filepath="$PROJECT_DIR$/FlightPlot.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_6" default="false" project-jdk-name="1.7" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_1_7" default="false" project-jdk-name="1.7" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="VcsDirectoryMappings">
@@ -173,6 +173,14 @@
       <JAVADOC />
       <SOURCES />
       <jarDirectory url="file://$PROJECT_DIR$/lib" recursive="false" />
+    </library>
+    <library name="lib1">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/jMAVlib/lib" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+      <jarDirectory url="file://$PROJECT_DIR$/jMAVlib/lib" recursive="false" />
     </library>
   </component>
 </project>

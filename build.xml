@@ -4,6 +4,9 @@
         <fileset dir="lib">
             <include name="*.jar"/>
         </fileset>
+        <fileset dir="jMAVlib/lib">
+            <include name="*.jar"/>
+        </fileset>
     </path>
 
     <target name="all" description="Do the entire build" depends="flightplot"/>
@@ -21,6 +24,8 @@
         <pathelement location="lib/jackson-core-2.9.0.jar.jar"/>
         <pathelement location="lib/jackson-databind-2.9.0.jar.jar"/>
         <pathelement location="lib/jackson-dataformat-csv-2.9.0.jar.jar"/>
+        <pathelement location="jMAVlib/lib/commons-io-2.7.jar"/>
+        <pathelement location="jMAVlib/lib/vecmath.jar"/>
     </path>
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.class.path"/>
 
@@ -46,6 +51,7 @@
             <zipgroupfileset dir="lib" includes="forms_rt.jar"/>
             <zipgroupfileset dir="lib" includes="vecmath.jar"/>
             <zipgroupfileset dir="lib" includes="jackson*.jar"/>
+            <zipgroupfileset dir="jMAVlib/lib" includes="commons-io-2.7.jar"/>
         </jar>
     </target>
 
