@@ -75,7 +75,7 @@ public class FlightPlot {
     }
 
     private static String appName = "FlightPlot";
-    private static String version = "0.3.2";
+    private static String version = "0.3.4R";
     private static String appNameAndVersion = appName + " v." + version;
     private static String colorParamPrefix = "Color ";
     private final Preferences preferences;
@@ -800,10 +800,22 @@ public class FlightPlot {
             viewMenu.add(item);
         }
 
+        // Help menu
+        JMenu helpMenu = new JMenu("Help");
+        JMenuItem AboutItem = new JMenuItem("About");
+        AboutItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                showAboutDialog();
+            }
+        });
+        helpMenu.add(AboutItem);
+
         // Menu bar
         JMenuBar menuBar = new JMenuBar();
         menuBar.add(fileMenu);
         menuBar.add(viewMenu);
+        menuBar.add(helpMenu);
         mainFrame.setJMenuBar(menuBar);
     }
 
@@ -1093,6 +1105,12 @@ public class FlightPlot {
                 }
             }
         }
+    }
+
+    public void showAboutDialog() {
+        JOptionPane.showMessageDialog(null,"This version of FlightPlot \n" +
+                "was written by Yonatan Harel.\n" +
+                "Version 0.3.4R","About",JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void processFile() {
