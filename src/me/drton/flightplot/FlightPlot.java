@@ -36,12 +36,10 @@ import org.jfree.ui.TextAnchor;
 import org.json.JSONObject;
 
 import javax.swing.*;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
-import javax.swing.event.TableModelEvent;
-import javax.swing.event.TableModelListener;
+import javax.swing.event.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
 import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.dnd.DnDConstants;
@@ -58,6 +56,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
+import java.util.regex.Pattern;
 
 /**
  * User: ton Date: 03.06.13 Time: 23:24
@@ -100,6 +99,8 @@ public class FlightPlot {
     private JButton logInfoButton;
     private JCheckBox markerCheckBox;
     private JButton savePresetButton;
+    private JTextField textSearch;
+    private JButton resetButton;
     private JCheckBoxMenuItem autosavePresets;
     private JRadioButtonMenuItem[] timeModeItems;
     private LogReader logReader = null;
@@ -127,6 +128,7 @@ public class FlightPlot {
     private List<ProcessorPreset> activeProcessors = new ArrayList<ProcessorPreset>();
     private Range lastTimeRange = null;
     private String currentPreset = null;
+    private TableRowSorter sorter;
 
     public FlightPlot() {
         Map<String, TrackExporter> exporters = new LinkedHashMap<String, TrackExporter>();
@@ -165,6 +167,18 @@ public class FlightPlot {
             }
         });
 
+        textSearch.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
+            }
+            public void removeUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
+            }
+            public void insertUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
+            }
+        });
+
         createMenuBar();
         java.util.List<String> processors = new ArrayList<String>(processorsTypesList.getProcessorsList());
         Collections.sort(processors);
@@ -188,6 +202,9 @@ public class FlightPlot {
                 ProcessorPreset pp = new ProcessorPreset(processorTitle, processor.getProcessorType(),
                         processor.getParameters(), Collections.<String, Color>emptyMap(), true);
                 updatePresetParameters(pp, null);
+                if (containsElement(pp)) {
+                    return;
+                }
                 int i = processorsListModel.getRowCount();
                 processorsListModel.addRow(new Object[]{pp.isVisible(), pp});
                 processorsList.getSelectionModel().setSelectionInterval(i, i);
@@ -208,6 +225,12 @@ public class FlightPlot {
             @Override
             public void actionPerformed(ActionEvent e) {
                 removeSelectedProcessor();
+            }
+        });
+        resetButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                resetSelection();
             }
         });
         openLogButton.addActionListener(new ActionListener() {
@@ -657,6 +680,8 @@ public class FlightPlot {
         processorsListModel.addColumn("");
         processorsListModel.addColumn("Processor");
         processorsList = new JTable(processorsListModel);
+        sorter = new TableRowSorter<DefaultTableModel>(processorsListModel);
+        processorsList.setRowSorter(sorter);
         processorsList.getColumnModel().getColumn(0).setMinWidth(20);
         processorsList.getColumnModel().getColumn(0).setMaxWidth(20);
         // Parameters table
@@ -1418,6 +1443,10 @@ public class FlightPlot {
         }
     }
 
+    private void resetSelection() {
+        textSearch.setText("");
+    }
+
     private void updateUsedColors() {
         colorSupplier.resetColorsUsed();
         for (int i = 0; i < processorsListModel.getRowCount(); i++) {
@@ -1496,5 +1525,20 @@ public class FlightPlot {
 
     public JFreeChart getChart() {
         return chart;
+    }
+
+    private void filterFields(String str) {
+        RowFilter<DefaultTableModel, Object> rf = RowFilter.regexFilter("(?i)"  + Pattern.quote(str), 0);
+        sorter.setRowFilter(rf);
+    }
+
+    private boolean containsElement(ProcessorPreset pp) {
+        int nRows = processorsListModel.getRowCount();
+        for (int i = 0; i < nRows; ++i) {
+            if (((String)processorsListModel.getValueAt(i, 1)).equals(pp.getTitle())) {
+                return true;
+            }
+        }
+        return false;
     }
 }
