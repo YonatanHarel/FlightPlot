@@ -167,18 +167,6 @@ public class FlightPlot {
             }
         });
 
-        textSearch.getDocument().addDocumentListener(new DocumentListener() {
-            public void changedUpdate(DocumentEvent e) {
-                filterFields(textSearch.getText());
-            }
-            public void removeUpdate(DocumentEvent e) {
-                filterFields(textSearch.getText());
-            }
-            public void insertUpdate(DocumentEvent e) {
-                filterFields(textSearch.getText());
-            }
-        });
-
         createMenuBar();
         java.util.List<String> processors = new ArrayList<String>(processorsTypesList.getProcessorsList());
         Collections.sort(processors);
@@ -231,6 +219,17 @@ public class FlightPlot {
             @Override
             public void actionPerformed(ActionEvent e) {
                 resetSelection();
+            }
+        });
+        textSearch.getDocument().addDocumentListener(new DocumentListener() {
+            public void changedUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
+            }
+            public void removeUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
+            }
+            public void insertUpdate(DocumentEvent e) {
+                filterFields(textSearch.getText());
             }
         });
         openLogButton.addActionListener(new ActionListener() {
@@ -680,6 +679,7 @@ public class FlightPlot {
         processorsListModel.addColumn("");
         processorsListModel.addColumn("Processor");
         processorsList = new JTable(processorsListModel);
+//        textSearch = RowFilterUtil.createRowFilter(processorsList);
         sorter = new TableRowSorter<DefaultTableModel>(processorsListModel);
         processorsList.setRowSorter(sorter);
         processorsList.getColumnModel().getColumn(0).setMinWidth(20);
@@ -1528,7 +1528,9 @@ public class FlightPlot {
     }
 
     private void filterFields(String str) {
-        RowFilter<DefaultTableModel, Object> rf = RowFilter.regexFilter("(?i)"  + Pattern.quote(str), 0);
+        // reference: https://stackoverflow.com/questions/29106565/filtering-a-jtable-in-two-columns
+        // instance 1 is the second row (in ourt case is the prcessor)
+        RowFilter<DefaultTableModel, Object> rf = RowFilter.regexFilter("(?i)"  + Pattern.quote(str), 1);
         sorter.setRowFilter(rf);
     }
 
