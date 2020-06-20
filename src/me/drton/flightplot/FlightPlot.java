@@ -1134,8 +1134,8 @@ public class FlightPlot {
 
     public void showAboutDialog() {
         JOptionPane.showMessageDialog(null,"This version of FlightPlot \n" +
-                "was written by Yonatan Harel.\n" +
-                "Version 0.3.4R","About",JOptionPane.INFORMATION_MESSAGE);
+                "was modified by Yonatan Harel.\n" +
+                "Version " + version,"About",JOptionPane.INFORMATION_MESSAGE);
     }
 
     private void processFile() {
