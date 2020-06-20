@@ -1535,8 +1535,11 @@ public class FlightPlot {
     private boolean containsElement(ProcessorPreset pp) {
         int nRows = processorsListModel.getRowCount();
         for (int i = 0; i < nRows; ++i) {
-            if (((String)processorsListModel.getValueAt(i, 1)).equals(pp.getTitle())) {
-                return true;
+            Object listPP = processorsListModel.getValueAt(i,1);
+            if (listPP instanceof ProcessorPreset) {
+                if (((ProcessorPreset)listPP).getTitle().equals(pp.getTitle())) {
+                    return true;
+                }
             }
         }
         return false;
