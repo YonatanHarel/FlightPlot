@@ -115,7 +115,7 @@ public class FlightPlot {
     private JFileChooser openLogFileChooser;
     private FileNameExtensionFilter presetExtensionFilter = new FileNameExtensionFilter("FlightPlot Presets (*.fplot)",
             "fplot");
-    private FileNameExtensionFilter parametersExtensionFilter = new FileNameExtensionFilter("Parameters (*.txt)", "txt");
+    private FileNameExtensionFilter parametersExtensionFilter = new FileNameExtensionFilter("Parameters (*.params)", "params");
     private AtomicBoolean invokeProcessFile = new AtomicBoolean(false);
     private TrackExportDialog trackExportDialog;
     private PlotExportDialog plotExportDialog;
@@ -784,14 +784,14 @@ public class FlightPlot {
         });
         fileMenu.add(exportParametersItem);
 
-        JMenuItem exportToCsvItem = new JMenuItem("Export to CSV...");
-        exportToCsvItem.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                showExportToCsvDialog();
-            }
-        });
-        fileMenu.add(exportToCsvItem);
+//        JMenuItem exportToCsvItem = new JMenuItem("Export to CSV...");
+//        exportToCsvItem.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent e) {
+//                showExportToCsvDialog();
+//            }
+//        });
+//        fileMenu.add(exportToCsvItem);
 
         if (!OSValidator.isMac()) {
             fileMenu.add(new JPopupMenu.Separator());
@@ -1073,8 +1073,8 @@ public class FlightPlot {
         int returnVal = fc.showDialog(mainFrame, "Export");
         if (returnVal == JFileChooser.APPROVE_OPTION) {
             String fileName = fc.getSelectedFile().toString();
-            if (parametersExtensionFilter == fc.getFileFilter() && !fileName.toLowerCase().endsWith(".txt")) {
-                fileName += ".txt";
+            if (parametersExtensionFilter == fc.getFileFilter() && !fileName.toLowerCase().endsWith(".params")) {
+                fileName += ".params";
             }
             try {
                 FileWriter fileWriter = new FileWriter(new File(fileName));
@@ -1091,7 +1091,42 @@ public class FlightPlot {
                     if (value instanceof Float) {
                         typeID = 1;
                     }
-                    fileWriter.write(String.format("%s\t%s\t%s\n", param.getKey(), typeID, param.getValue()));
+
+//                    switch (value) {
+//                        case FactMetaData::valueTypeUint8:
+//                            return MAV_PARAM_TYPE_UINT8;
+//
+//                        case FactMetaData::valueTypeInt8:
+//                            return MAV_PARAM_TYPE_INT8;
+//
+//                        case FactMetaData::valueTypeUint16:
+//                            return MAV_PARAM_TYPE_UINT16;
+//
+//                        case FactMetaData::valueTypeInt16:
+//                            return MAV_PARAM_TYPE_INT16;
+//
+//                        case FactMetaData::valueTypeUint32:
+//                            return MAV_PARAM_TYPE_UINT32;
+//
+//                        case FactMetaData::valueTypeUint64:
+//                            return MAV_PARAM_TYPE_UINT64;
+//
+//                        case FactMetaData::valueTypeInt64:
+//                            return MAV_PARAM_TYPE_INT64;
+//
+//                        case FactMetaData::valueTypeFloat:
+//                            return MAV_PARAM_TYPE_REAL32;
+//
+//                        case FactMetaData::valueTypeDouble:
+//                            return MAV_PARAM_TYPE_REAL64;
+
+                    String vehicleNumber = "1";
+                    String valueType = logReader.getParameterValueType(param.getKey());
+                    Object valueObj = param.getValue();
+                    if (value instanceof Double || value instanceof Float) {
+                        valueObj = String.format("%.12f", valueObj);
+                    }
+                    fileWriter.write(String.format("%s\t%s\t%s\t%s\n", vehicleNumber, param.getKey(), valueObj, valueType));
                 }
                 fileWriter.close();
             } catch (Exception e) {
