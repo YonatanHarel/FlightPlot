@@ -1092,41 +1092,14 @@ public class FlightPlot {
                         typeID = 1;
                     }
 
-//                    switch (value) {
-//                        case FactMetaData::valueTypeUint8:
-//                            return MAV_PARAM_TYPE_UINT8;
-//
-//                        case FactMetaData::valueTypeInt8:
-//                            return MAV_PARAM_TYPE_INT8;
-//
-//                        case FactMetaData::valueTypeUint16:
-//                            return MAV_PARAM_TYPE_UINT16;
-//
-//                        case FactMetaData::valueTypeInt16:
-//                            return MAV_PARAM_TYPE_INT16;
-//
-//                        case FactMetaData::valueTypeUint32:
-//                            return MAV_PARAM_TYPE_UINT32;
-//
-//                        case FactMetaData::valueTypeUint64:
-//                            return MAV_PARAM_TYPE_UINT64;
-//
-//                        case FactMetaData::valueTypeInt64:
-//                            return MAV_PARAM_TYPE_INT64;
-//
-//                        case FactMetaData::valueTypeFloat:
-//                            return MAV_PARAM_TYPE_REAL32;
-//
-//                        case FactMetaData::valueTypeDouble:
-//                            return MAV_PARAM_TYPE_REAL64;
-
                     String vehicleNumber = "1";
-                    String valueType = logReader.getParameterValueType(param.getKey());
+                    String componentId = "1";
+                    int valueType = getMAVLinkType(logReader.getParameterValueType(param.getKey()));
                     Object valueObj = param.getValue();
                     if (value instanceof Double || value instanceof Float) {
                         valueObj = String.format("%.12f", valueObj);
                     }
-                    fileWriter.write(String.format("%s\t%s\t%s\t%s\n", vehicleNumber, param.getKey(), valueObj, valueType));
+                    fileWriter.write(String.format("%s\t%s\t%s\t%s\t%s\n", vehicleNumber, componentId, param.getKey(), valueObj, valueType));
                 }
                 fileWriter.close();
             } catch (Exception e) {
@@ -1580,5 +1553,53 @@ public class FlightPlot {
             }
         }
         return false;
+    }
+
+    protected int getMAVLinkType(String valueType) {
+        int mavlinkType;
+
+        switch (valueType) {
+            case "uint8_t":
+                mavlinkType = 1;
+                break;
+            case "int8_t":
+                mavlinkType = 2;
+                break;
+            case "uint16_t":
+                mavlinkType = 3;
+                break;
+            case "int16_t":
+                mavlinkType = 4;
+                break;
+            case "uint32_t":
+                mavlinkType = 5;
+                break;
+            case "int32_t":
+                mavlinkType = 6;
+                break;
+            case "uint64_t":
+                mavlinkType = 7;
+                break;
+            case "int64_t":
+                mavlinkType = 8;
+                break;
+            case "float":
+                mavlinkType = 9;
+                break;
+            case "double":
+                mavlinkType = 10;
+                break;
+            case "char":
+                mavlinkType = 11;
+                break;
+            case "bool":
+                mavlinkType = 12;
+                break;
+            default:
+                mavlinkType = -1;
+                break;
+        }
+
+        return mavlinkType;
     }
 }
