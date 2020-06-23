@@ -1078,7 +1078,7 @@ public class FlightPlot {
             }
             try {
                 FileWriter fileWriter = new FileWriter(new File(fileName));
-                fileWriter.write(String.format("%s\n", "# FlightPlot parameters for Vehicle 1"));
+                fileWriter.write(String.format("%s\n#\n", "# FlightPlot parameters for Vehicle 1"));
                 fileWriter.write(String.format("%s%s\n", "# Stack: ",logReader.getVersion().get("HW")));
                 fileWriter.write(String.format("%s%s\n", "# Vehicle: " , 1));
                 fileWriter.write(String.format("%s%s\n", "# Version: ", logReader.getVersion().get("FW")));
@@ -1100,12 +1100,12 @@ public class FlightPlot {
 
                     String vehicleNumber = "1";
                     String componentId = "1";
-                    int valueType = getMAVLinkType(logReader.getParameterValueType(param.getKey()));
+                    typeID = getMAVLinkType(logReader.getParameterValueType(param.getKey()));
                     Object valueObj = param.getValue();
                     if (value instanceof Double || value instanceof Float) {
-                        valueObj = String.format("%.12f", valueObj);
+                        valueObj = String.format("%.18f", valueObj);
                     }
-                    fileWriter.write(String.format("%s\t%s\t%s\t%s\t%s\n", vehicleNumber, componentId, param.getKey(), valueObj, valueType));
+                    fileWriter.write(String.format("%s\t%s\t%s\t%s\t%s\n", vehicleNumber, componentId, param.getKey(), valueObj, typeID));
                 }
                 fileWriter.close();
             } catch (Exception e) {
