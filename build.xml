@@ -32,7 +32,7 @@
     <taskdef name="javac2" classname="com.intellij.ant.Javac2" classpathref="javac2.class.path"/>
 
     <target name="compile" description="Compile java sources" depends="make_dirs">
-        <javac2 destdir="out/production/FlightPlot" includeantruntime="false" debug="true" encoding="UTF8" target="1.6" source="1.6">
+        <javac2 destdir="out/production/FlightPlot" includeantruntime="false" debug="true" encoding="UTF8" target="1.7" source="1.7">
             <compilerarg value="-Djava.ext.dirs="/>
             <classpath refid="libsclasspath"/>
             <src path="src"/>
