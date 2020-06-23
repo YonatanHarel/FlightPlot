@@ -1078,6 +1078,12 @@ public class FlightPlot {
             }
             try {
                 FileWriter fileWriter = new FileWriter(new File(fileName));
+                fileWriter.write(String.format("%s\n", "# FlightPlot parameters for Vehicle 1"));
+                fileWriter.write(String.format("%s%s\n", "# Stack: ",logReader.getVersion().get("HW")));
+                fileWriter.write(String.format("%s%s\n", "# Vehicle: " , 1));
+                fileWriter.write(String.format("%s%s\n", "# Version: ", logReader.getVersion().get("FW")));
+                fileWriter.write(String.format("%s%s\n#\n", "# FC Version: ", logReader.getVersion().get("FC_ver")));
+                fileWriter.write(String.format("%s\n", "# Vehicle-Id Component-Id Name Value Type"));
                 List<Map.Entry<String, Object>> paramsList = new ArrayList<Map.Entry<String, Object>>(logReader.getParameters().entrySet());
                 Collections.sort(paramsList, new Comparator<Map.Entry<String, Object>>() {
                     @Override
