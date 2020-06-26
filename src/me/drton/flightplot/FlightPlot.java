@@ -989,6 +989,10 @@ public class FlightPlot {
                 }
                 Preset preset = Preset.unpackJSONObject(new JSONObject(new String(b, Charset.forName("utf8"))));
                 loadPreset(preset);
+                updatePreset(preset);
+                loadPresetsList();
+                updatePresetEdited(false);
+                savePreferences();
                 processFile();
             } catch (Exception e) {
                 setStatus("Error: " + e);
