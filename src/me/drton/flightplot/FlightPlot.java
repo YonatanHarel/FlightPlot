@@ -101,6 +101,7 @@ public class FlightPlot {
     private JButton savePresetButton;
     private JTextField textSearch;
     private JButton resetButton;
+    private JButton removeAllButton;
     private JCheckBoxMenuItem autosavePresets;
     private JRadioButtonMenuItem[] timeModeItems;
     private LogReader logReader = null;
@@ -213,6 +214,12 @@ public class FlightPlot {
             @Override
             public void actionPerformed(ActionEvent e) {
                 removeSelectedProcessor();
+            }
+        });
+        removeAllButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                removeAllPrecessors();
             }
         });
         resetButton.addActionListener(new ActionListener() {
@@ -356,6 +363,26 @@ public class FlightPlot {
             loadPreferences();
         } catch (BackingStoreException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void removeAllPrecessors() {
+        int result = JOptionPane.showConfirmDialog((Component) null, "You are about to remove ALL processors\n" +
+                        "(saving as preset before removing them is highly recommended.\n" +
+                        "Note that preset(s) will not be removed.)\n" +
+                        "Are you sure?",
+                "alert", JOptionPane.OK_CANCEL_OPTION);
+        if (result == 0) {
+            if (processorsListModel.getRowCount() > 0) {
+                for (int i = processorsListModel.getRowCount() - 1; i > -1; i--) {
+                    processorsListModel.removeRow(i);
+                }
+            }
+            processorsList.removeAll();
+            processorsList.repaint();
+            updateUsedColors();
+            presetComboBox.setSelectedItem(null);
+            processFile();
         }
     }
 
